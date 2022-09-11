@@ -26,4 +26,6 @@ public interface IUserService {
     Response deleteUser(Long id, String token);
 
     Response deletePermanently(Long id, String token);
+
+    Response restore(String token, Long id);
 }

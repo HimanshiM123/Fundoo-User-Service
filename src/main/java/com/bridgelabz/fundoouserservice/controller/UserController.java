@@ -25,8 +25,8 @@ public class UserController {
 
 
     /*
-     *@Purpose:to add admin details into the Admin Repository
-     * @Param : AdminDTO
+     *@Purpose:to add user details into the user Repository
+     * @Param : UserDTO
      */
 
     @PostMapping(value = "/registerUser")
@@ -36,7 +36,7 @@ public class UserController {
     }
 
      /*
-     *@Purpose : to get list of admin details in the Admin Repository using id
+     *@Purpose : to get list of User details in the User Repository using id
       @Param  : id
      */
 
@@ -47,7 +47,7 @@ public class UserController {
     }
 
     /*
-     *@Purpose : Ability to get list of admin details in the Admin Repository
+     *@Purpose : Ability to get list of User details in the Admin Repository
       @Param : token
      */
 
@@ -58,8 +58,8 @@ public class UserController {
     }
 
     /*
-     @Purpose : Able to update admin details into the Admin Repository
-     @Param : AdminDTO, id and token
+     @Purpose : Able to update User details into the user Repository
+     @Param :   UserDTO, id and token
      */
 
     @PutMapping("updateUser/{id}")
@@ -69,7 +69,7 @@ public class UserController {
     }
 
      /*
-     @Purpose : Able to Access existing admin details by using login in the Admin Repository
+     @Purpose : Able to Access existing User details by using login in the User Repository
      @Param : email and password
      */
 
@@ -80,7 +80,7 @@ public class UserController {
     }
 
     /*
-     @Purpose : Ability to Update Password of admin in the Admin Repository
+     @Purpose : Ability to Update Password of user in the user Repository
      @Param : token and newPassword
      */
 
@@ -91,7 +91,7 @@ public class UserController {
     }
 
     /*
-     @Purpose : Able to Reset Password of admin in the Admin Repository
+     @Purpose : Able to Reset Password of user in the user Repository
      @Param : EmailId
      */
 
@@ -102,24 +102,45 @@ public class UserController {
     }
 
     /*
-    @Purpose : Ability to Add Profile of admin user in the Admin Repository
-    @Param : id and token
+    @Purpose : Ability to Add Profile of  user in the user Repository
+    @Param : profilePath and token
     */
     @PostMapping("/addprofilepic")
     ResponseEntity<Response> addProfilePic(@RequestParam(value = "File") MultipartFile profilePath, @PathVariable String token) {
         Response response = userService.addProfilePic(profilePath, token);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    /*
+     @Purpose : Ability to delete  user in the user Repository
+     @Param : token and id
+     */
+
     @DeleteMapping("/deleteUser/{id}")
     ResponseEntity<Response> deleteUser(@PathVariable Long id, @RequestHeader String token){
         Response response = userService.deleteUser(id, token);
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
+
+    /*
+     @Purpose : Ability to delete user permanently from the user Repository
+     @Param : token and id
+     */
+
     @DeleteMapping("/deletePermanently")
     ResponseEntity<Response> deletePermanently(@PathVariable Long id, @RequestHeader String token){
         Response response = userService.deletePermanently(id, token);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
+    /*
+     @Purpose : Ability to Restore deleted user from the user Repository
+     @Param : token and id
+     */
+    @DeleteMapping("/restore/{id}")
+    public ResponseEntity<Response> restore(@RequestHeader String token, @PathVariable Long id){
+        Response response = userService.restore(token, id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

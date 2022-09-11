@@ -108,7 +108,7 @@ public class UserService implements IUserService{
         Optional<UserModel> isEmailPresent = repository.findByEmailId(emailId);
         if (isEmailPresent.isPresent()){
             String token = tokenUtil.crateToken(isEmailPresent.get().getId());
-            String url = "http://localhost:8082/user/resetPassword" + token;
+            String url = "http://localhost:8083/user/resetPassword" + token;
             String subject = "Reset Password";
             String body = "To Reset Password Click This Link\n" + url + "For Reset Use this Token\n" + token;
             mailService.send(isEmailPresent.get().getEmailId(), url, subject);
@@ -138,13 +138,40 @@ public class UserService implements IUserService{
         Optional<UserModel> isUserPresent = repository.findById(userId);
         if (isUserPresent.isPresent()){
             repository.delete(isUserPresent.get());
-            return new Response("User Deleted", 200, isUserPresent);
+            return new Response("User moved in trash", 200, isUserPresent);
         }
         throw new UserException(400, "User Not Found");
     }
 
     @Override
     public Response deletePermanently(Long id, String token) {
-        return null;
+
+        Long userId = tokenUtil.decodeToken(token);
+        Optional<UserModel> userModel = repository.findById(userId);
+        if (userModel.isPresent()){
+            if (userModel.get().isDeleted()==true){
+                userModel.get().setDeleted(true);
+               repository.save(userModel.get());
+               return new Response("Deleted User Permanently", 200, null);
+            } else {
+                return new Response("User Not Found", 200, null);
+            }
+        }
+        throw new UserException(400, "Token Wrong");
+    }
+
+    @Override
+    public Response restore(String token, Long id) {
+        Long userId = tokenUtil.decodeToken(token);
+        Optional<UserModel> userModel = repository.findById(userId);
+        if (userModel.isPresent()){
+            if (userModel.get().isDeleted()==true){
+                userModel.get().setDeleted(false);
+                return new Response("User Restored", 200, null);
+            } else {
+                return new Response("User Not Found", 200, null);
+            }
+        }
+        throw new UserException(400, "Token Wrong");
     }
 }
