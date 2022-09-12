@@ -133,7 +133,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public Response deleteUser(Long id, String token) {
+    public Response deletePermanently(Long id, String token) {
         Long userId = tokenUtil.decodeToken(token);
         Optional<UserModel> isUserPresent = repository.findById(userId);
         if (isUserPresent.isPresent()){
@@ -144,12 +144,13 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public Response deletePermanently(Long id, String token) {
+    public Response deleteUser(Long id, String token) {
 
         Long userId = tokenUtil.decodeToken(token);
         Optional<UserModel> userModel = repository.findById(userId);
         if (userModel.isPresent()){
             if (userModel.get().isDeleted()==true){
+                userModel.get().setActive(false);
                 userModel.get().setDeleted(true);
                repository.save(userModel.get());
                return new Response("Deleted User Permanently", 200, null);
@@ -166,7 +167,9 @@ public class UserService implements IUserService{
         Optional<UserModel> userModel = repository.findById(userId);
         if (userModel.isPresent()){
             if (userModel.get().isDeleted()==true){
+                userModel.get().setActive(true);
                 userModel.get().setDeleted(false);
+                repository.save(userModel.get());
                 return new Response("User Restored", 200, null);
             } else {
                 return new Response("User Not Found", 200, null);

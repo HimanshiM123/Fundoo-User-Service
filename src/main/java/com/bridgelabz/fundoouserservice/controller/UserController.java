@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
-/*
+    /*
       Purpose : UserController to process Data API's
       @author : Himanshi Mohabe
       version : 1.0
@@ -116,9 +116,9 @@ public class UserController {
      @Param : token and id
      */
 
-    @DeleteMapping("/deleteUser/{id}")
-    ResponseEntity<Response> deleteUser(@PathVariable Long id, @RequestHeader String token){
-        Response response = userService.deleteUser(id, token);
+    @DeleteMapping("/deletePermanently/{id}")
+    ResponseEntity<Response> deletePermanently(@PathVariable Long id, @RequestHeader String token){
+        Response response = userService.deletePermanently(id, token);
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
@@ -128,9 +128,9 @@ public class UserController {
      @Param : token and id
      */
 
-    @DeleteMapping("/deletePermanently")
-    ResponseEntity<Response> deletePermanently(@PathVariable Long id, @RequestHeader String token){
-        Response response = userService.deletePermanently(id, token);
+    @DeleteMapping("/deleteUser")
+    ResponseEntity<Response> deleteUser(@PathVariable Long id, @RequestHeader String token){
+        Response response = userService.deleteUser(id, token);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -138,7 +138,7 @@ public class UserController {
      @Purpose : Ability to Restore deleted user from the user Repository
      @Param : token and id
      */
-    @DeleteMapping("/restore/{id}")
+    @PutMapping("/restore/{id}")
     public ResponseEntity<Response> restore(@RequestHeader String token, @PathVariable Long id){
         Response response = userService.restore(token, id);
         return new ResponseEntity<>(response, HttpStatus.OK);
